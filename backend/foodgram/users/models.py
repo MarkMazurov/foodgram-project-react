@@ -30,6 +30,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
 
     class Meta:
+        ordering = ['-date_joined']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         constraints = [
@@ -59,9 +60,6 @@ class Subscribe(models.Model):
         verbose_name='Автор рецептов'
     )
 
-    def __str__(self) -> str:
-        return "{}_{}".format(self.user, self.author)
-
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
@@ -75,3 +73,6 @@ class Subscribe(models.Model):
                 name='prevent_self_following'
             ),
         ]
+
+    def __str__(self) -> str:
+        return "{}_{}".format(self.user, self.author)

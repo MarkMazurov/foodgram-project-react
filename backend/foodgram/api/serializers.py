@@ -12,6 +12,20 @@ from recipes.models import (Ingredient, Favorite, Recipe, RecipeIngredient,
 from users.serializers import CustomUserReadSerializer
 
 
+def bulk_create(recipe, ingredients):
+    """Множественная запись через метод bulk_create()"""
+
+    ing_list = [
+        RecipeIngredient(
+            ingredient_id=ingredient['ingredient']['id'],
+            recipe=recipe,
+            amount=ingredient['amount']
+        )
+        for ingredient in ingredients
+    ]
+    RecipeIngredient.objects.bulk_create(ing_list)
+
+
 class HexColor(serializers.Field):
     """Кастомный тип поля для обработки цвета"""
 
@@ -134,26 +148,15 @@ class RecipeRecordSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('recipeingredients')
         tags = validated_data.pop('tags')
         recipe = super().create(validated_data)
-        for tag in tags:
-            recipe.tags.add(tag)
-        for ingredient in ingredients:
-            RecipeIngredient.objects.create(
-                ingredient_id=ingredient['ingredient']['id'],
-                recipe=recipe,
-                amount=ingredient['amount']
-            )
+        recipe.tags.set(tags)
+        bulk_create(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
         if validated_data.get('tags'):
             instance.tags.set(validated_data.get('tags', instance.tags))
         instance.ingredients.clear()
-        for ingredient in validated_data['recipeingredients']:
-            RecipeIngredient.objects.create(
-                ingredient_id=ingredient['ingredient']['id'],
-                recipe=instance,
-                amount=ingredient['amount']
-            )
+        bulk_create(instance, validated_data['recipeingredients'])
         validated_data.pop('recipeingredients')
         super().update(instance, validated_data)
         instance.save()

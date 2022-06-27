@@ -2,6 +2,7 @@ import textwrap
 
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from users.models import CustomUser
 
 
@@ -24,12 +25,12 @@ class Tag(models.Model):
         unique=True
     )
 
-    def __str__(self) -> str:
-        return textwrap.shorten(self.name, width=30)
-
     class Meta:
         verbose_name = 'Тег',
         verbose_name_plural = 'Теги'
+
+    def __str__(self) -> str:
+        return textwrap.shorten(self.name, width=30)
 
 
 class Ingredient(models.Model):
@@ -41,12 +42,12 @@ class Ingredient(models.Model):
         verbose_name='Единицы измерения'
     )
 
-    def __str__(self) -> str:
-        return textwrap.shorten(self.name, width=30)
-
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self) -> str:
+        return textwrap.shorten(self.name, width=30)
 
 
 class Recipe(models.Model):
@@ -84,9 +85,6 @@ class Recipe(models.Model):
         through='RecipeIngredient'
     )
 
-    def __str__(self) -> str:
-        return textwrap.shorten(self.name, width=30)
-
     class Meta:
         ordering = ['-pub_date']
         verbose_name = 'Рецепт'
@@ -97,6 +95,9 @@ class Recipe(models.Model):
                 name='unique_recipes'
             )
         ]
+
+    def __str__(self) -> str:
+        return textwrap.shorten(self.name, width=30)
 
 
 class RecipeIngredient(models.Model):
@@ -119,11 +120,6 @@ class RecipeIngredient(models.Model):
         validators=[MinValueValidator(1)]
     )
 
-    def __str__(self) -> str:
-        return "{}_{}".format(
-            self.recipe.__str__(), self.ingredient.__str__()
-        )
-
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
@@ -133,6 +129,10 @@ class RecipeIngredient(models.Model):
                 name='unique_recipe_ingredient'
             )
         ]
+
+    def __str__(self) -> str:
+        return "{}_{}".format(
+            self.recipe.__str__(), self.ingredient.__str__())
 
 
 class Favorite(models.Model):
@@ -151,9 +151,6 @@ class Favorite(models.Model):
         verbose_name='Рецепт'
     )
 
-    def __str__(self) -> str:
-        return "{}_{}".format(self.user, self.recipe)
-
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
@@ -163,6 +160,9 @@ class Favorite(models.Model):
                 name='unique_favorites'
             )
         ]
+
+    def __str__(self) -> str:
+        return "{}_{}".format(self.user, self.recipe)
 
 
 class ShoppingCart(models.Model):
@@ -181,9 +181,6 @@ class ShoppingCart(models.Model):
         verbose_name='Рецепт'
     )
 
-    def __str__(self) -> str:
-        return "{}_{}".format(self.user, self.recipe)
-
     class Meta:
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
@@ -193,3 +190,6 @@ class ShoppingCart(models.Model):
                 name='unique_shopping_carts'
             )
         ]
+
+    def __str__(self) -> str:
+        return "{}_{}".format(self.user, self.recipe)

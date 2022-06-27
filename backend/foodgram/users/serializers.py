@@ -92,7 +92,7 @@ class SubscribeSerializer(ModelSerializer, IsSubscribed):
         author = get_object_or_404(CustomUser, id=obj.id)
         if request.GET.get('recipes_limit'):
             recipes_limit = int(request.GET.get('recipes_limit'))
-            queryset = author.recipes.order_by('-pub_date')[:recipes_limit]
+            queryset = author.recipes[:recipes_limit]
         else:
-            queryset = author.recipes.order_by('-pub_date')
+            queryset = author.recipes
         return RecipeShortSerializer(queryset, many=True).data

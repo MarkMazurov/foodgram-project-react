@@ -5,11 +5,11 @@ from users import views as user_views
 from api import views
 
 router = routers.DefaultRouter()
-router.register(r'users', user_views.CustomUserViewSet, basename='users')
-router.register(r'tags', views.TagViewSet, basename='tags')
+router.register('users', user_views.CustomUserViewSet, basename='users')
+router.register('tags', views.TagViewSet, basename='tags')
 router.register(
-    r'ingredients', views.IngredientViewSet, basename='ingredients')
-router.register(r'recipes', views.RecipeViewSet, basename='recipes')
+    'ingredients', views.IngredientViewSet, basename='ingredients')
+router.register('recipes', views.RecipeViewSet, basename='recipes')
 
 urlpatterns = [
     path('recipes/<recipe_id>/favorite/',
