@@ -1,17 +1,29 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv(
     'SECRET_KEY',
     default='n1&$ozi-65%reuf8_*@(#qyb&pdo(@v)yy(!2gpwz&$uo+(2&4')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '84.201.152.243',
+    'producthelper92.sytes.net',
+    'www.producthelper92.sytes.net',
+    '127.0.0.1',
+    'localhost',
+    'backend'
+]
+
 # os.getenv(
-# 'PUBLIC_HOST',
-# default='web localhost 127.0.0.1 [::1]]').split()
+#    'PUBLIC_HOST',
+#    default='web localhost 127.0.0.1 [::1]]').split()
 
 
 INSTALLED_APPS = [
@@ -63,36 +75,34 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv(
+            'DB_ENGINE',
+            default='django.db.backends.postgresql'
+        ),
+        'NAME': os.getenv(
+            'DB_NAME',
+            default='postgres'
+        ),
+        'USER': os.getenv(
+            'POSTGRES_USER',
+            default='postgres'
+        ),
+        'PASSWORD': os.getenv(
+            'POSTGRES_PASSWORD',
+            default='postgres'
+        ),
+        'HOST': os.getenv(
+            'DB_HOST',
+            default='db'
+        ),
+        'PORT': os.getenv(
+            'DB_PORT',
+            default='5432'
+        )
     }
 }
 
-# 'ENGINE': os.getenv(
-#            'DB_ENGINE',
-#            default='django.db.backends.postgresql'
-#        ),
-#        'NAME': os.getenv(
-#            'DB_NAME',
-#            default='postgres'
-#        ),
-#        'USER': os.getenv(
-#            'POSTGRES_USER',
-#            default='postgres'
-#        ),
-#        'PASSWORD': os.getenv(
-#            'POSTGRES_PASSWORD',
-#            default='postgres'
-#        ),
-#        'HOST': os.getenv(
-#            'DB_HOST',
-#            default='db'
-#        ),
-#        'PORT': os.getenv(
-#            'DB_PORT',
-#            default='5432'
-#        )
-
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
@@ -114,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'Europe/Moscow'
 

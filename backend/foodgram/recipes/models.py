@@ -57,8 +57,7 @@ class Recipe(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         related_name='recipes',
-        verbose_name='Автор',
-        db_index=True
+        verbose_name='Автор'
     )
     name = models.CharField(max_length=200, verbose_name='Название')
     text = models.TextField(verbose_name='Описание')

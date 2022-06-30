@@ -79,8 +79,7 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         """Кастомный метод для добавления рецепта в избранное"""
 
         pk = int(self.kwargs['recipe_id'])
-        recipe = get_object_or_404(Recipe, id=pk)
-        favorite = Favorite.objects.create(user=request.user, recipe=recipe)
+        favorite = Favorite.objects.create(user=request.user, recipe_id=pk)
         serializer = FavoriteSerializer(favorite, context={'request': request})
         return Response(serializer.data, HTTPStatus.CREATED)
 
@@ -88,11 +87,10 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         """Кастомный метод для удаления рецепта из избранного"""
 
         pk = int(self.kwargs['recipe_id'])
-        recipe = get_object_or_404(Recipe, id=pk)
         favorite = get_object_or_404(
             Favorite,
             user=request.user,
-            recipe=recipe
+            recipe_id=pk
         )
         favorite.delete()
         return Response(HTTPStatus.NO_CONTENT)
@@ -109,8 +107,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
         """Кастомный метод для добавления рецепта в список покупок"""
 
         pk = int(self.kwargs['recipe_id'])
-        recipe = get_object_or_404(Recipe, id=pk)
-        cart = ShoppingCart.objects.create(user=request.user, recipe=recipe)
+        cart = ShoppingCart.objects.create(user=request.user, recipe_id=pk)
         serializer = ShoppingCartSerializer(cart, context={'request': request})
         return Response(serializer.data, HTTPStatus.CREATED)
 
@@ -118,11 +115,10 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
         """Кастомный метод для удаления рецепта из списка покупок"""
 
         pk = int(self.kwargs['recipe_id'])
-        recipe = get_object_or_404(Recipe, id=pk)
         cart = get_object_or_404(
             ShoppingCart,
             user=request.user,
-            recipe=recipe
+            recipe_id=pk
         )
         cart.delete()
         return Response(HTTPStatus.NO_CONTENT)

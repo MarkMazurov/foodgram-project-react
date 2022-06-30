@@ -12,7 +12,7 @@ from recipes.models import (Ingredient, Favorite, Recipe, RecipeIngredient,
 from users.serializers import CustomUserReadSerializer
 
 
-def bulk_create(recipe, ingredients):
+def recipe_ing_bulk_create(recipe, ingredients):
     """Множественная запись через метод bulk_create()"""
 
     ing_list = [
@@ -23,7 +23,14 @@ def bulk_create(recipe, ingredients):
         )
         for ingredient in ingredients
     ]
-    RecipeIngredient.objects.bulk_create(ing_list)
+    return RecipeIngredient.objects.bulk_create(ing_list)
+
+
+def short_check_fav_and_cart(request, obj, model):
+    """Метод для оптимизации проверки"""
+
+    return (request.user.is_authenticated and model.objects.filter(
+            user=request.user, recipe__id=obj.id).exists())
 
 
 class HexColor(serializers.Field):
@@ -104,15 +111,13 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         """Добавлен ли рецепт с Избранное"""
 
         request = self.context.get('request')
-        return (request.user.is_authenticated and Favorite.objects.filter(
-            user=request.user, recipe__id=obj.id).exists())
+        return short_check_fav_and_cart(request, obj, Favorite)
 
     def get_is_in_shopping_cart(self, obj):
         """Добавлен ли рецепт в Список покупок"""
 
         request = self.context.get('request')
-        return (request.user.is_authenticated and ShoppingCart.objects.filter(
-            user=request.user, recipe__id=obj.id).exists())
+        return short_check_fav_and_cart(request, obj, ShoppingCart)
 
 
 class RecipeRecordSerializer(serializers.ModelSerializer):
@@ -149,14 +154,14 @@ class RecipeRecordSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = super().create(validated_data)
         recipe.tags.set(tags)
-        bulk_create(recipe, ingredients)
+        recipe_ing_bulk_create(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
         if validated_data.get('tags'):
             instance.tags.set(validated_data.get('tags', instance.tags))
         instance.ingredients.clear()
-        bulk_create(instance, validated_data['recipeingredients'])
+        recipe_ing_bulk_create(instance, validated_data['recipeingredients'])
         validated_data.pop('recipeingredients')
         super().update(instance, validated_data)
         instance.save()
