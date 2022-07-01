@@ -48,10 +48,11 @@ git clone https://github.com/MarkMazurov/foodgram-project-react.git
 sudo docker-compose up -d --build
 ```
 
-5. Проведите миграции и соберите статику:  (id контейнера - backend)
+5. Проведите миграции, загрузите ингредиенты в базу и соберите статику:  (id контейнера - backend)
 ```
 sudo docker-compose exec <CONTAINER ID> python3 manage.py makemigrations
 sudo docker-compose exec <CONTAINER ID> python3 manage.py migrate
+sudo docker-compose exec <CONTAINER ID> python3 manage.py load_from_csv
 sudo docker-compose exec <CONTAINER ID> python3 manage.py collectstatic --no-input
 ```
 

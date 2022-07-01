@@ -21,7 +21,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (ReadOnly,)
+    permission_classes = [ReadOnly]
     pagination_class = None
 
 
@@ -30,7 +30,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (ReadOnly,)
+    permission_classes = [ReadOnly]
     pagination_class = None
     filterset_class = IngredientFilter
 
@@ -39,7 +39,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для обработки запросов к рецептам"""
 
     serializer_class = RecipeRecordSerializer
-    permission_classes = (AuthorOrReadOnly,)
     filterset_class = RecipeFilter
 
     def get_queryset(self):
@@ -59,6 +58,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return queryset.filter(is_in_shopping_cart=True)
         return queryset
 
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            permission_classes = (permissions.AllowAny,)
+        elif self.action in ('update', 'partial_update', 'destroy'):
+            permission_classes = (AuthorOrReadOnly,)
+        else:
+            permission_classes = (permissions.IsAuthenticated,)
+        return [permission() for permission in permission_classes]
+
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:
             return RecipeReadSerializer
@@ -73,6 +81,7 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = None
 
     def favorite_create(self, request, *args, **kwargs):
@@ -101,6 +110,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
 
     queryset = ShoppingCart.objects.all()
     serializer_class = ShoppingCartSerializer
+    permission_classes = [AuthorOrReadOnly]
     pagination_class = None
 
     def cart_create(self, request, *args, **kwargs):
@@ -126,6 +136,8 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
 
 class ShoppingCartDownloadViewSet(viewsets.ModelViewSet):
     """Вьюсет для загрузки списка покупок"""
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def download(self, request):
         """Кастомный метод для создания и скачивания списка покупок"""

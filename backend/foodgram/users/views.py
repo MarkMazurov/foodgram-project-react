@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from django.shortcuts import get_list_or_404, get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
 from users.models import CustomUser, Subscribe
@@ -30,6 +30,7 @@ class SubscribeViewSet(viewsets.ModelViewSet):
     """Вьюсет для обработки запросов к подпискам"""
 
     serializer_class = SubscribeSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return get_list_or_404(CustomUser, following__user=self.request.user)
