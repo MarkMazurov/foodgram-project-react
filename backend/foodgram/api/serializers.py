@@ -167,6 +167,17 @@ class RecipeRecordSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def validate_ingredients(self, value):
+        """Валидация повторяющихся ингредиентов"""
+
+        ingredients = []
+        for recipeingredient in value:
+            ing_id = recipeingredient['ingredient']['id']
+            if ing_id in ingredients:
+                raise serializers.ValidationError('Повторяющийся ингредиент!')
+            ingredients.append(ing_id)
+        return value
+
 
 class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор для Избранного"""
