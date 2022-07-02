@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
-from .utils import pdf_file_create
+from api.utils.utils import pdf_file_create
 from recipes.models import (Ingredient, Favorite, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
 from users.permissions import AuthorOrReadOnly, ReadOnly

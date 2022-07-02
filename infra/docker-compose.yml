@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: ..backend/foodgram
+      context: ../backend
       dockerfile: Dockerfile
     volumes:
       - static_backend:/app/static

@@ -15,8 +15,8 @@ def pdf_file_create(list, text):
     START_A, START_B = 40, 720
 
     cart = canvas.Canvas(buffer, pagesize=A4)
-    registerFont(TTFont('BuyanThin', '../foodgram/api/fonts/BuyanThin.ttf'))
-    registerFont(TTFont('BuyanReg', '../foodgram/api/fonts/BuyanRegular.ttf'))
+    registerFont(TTFont('BuyanThin', './data/BuyanThin.ttf'))
+    registerFont(TTFont('BuyanReg', './data/BuyanRegular.ttf'))
     cart.setFont('BuyanReg', 25)
     cart.setTitle(f'{text}')
     cart.drawString(START_A,
